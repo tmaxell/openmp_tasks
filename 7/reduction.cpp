@@ -66,4 +66,24 @@ double reductionOpenMP(const std::vector<int>& array) {
     return endTime - startTime;
 }
 
+int main() {
+    std::srand(static_cast<unsigned int>(std::time(0)));
+    const size_t arraySize = 1'000'000;
+    std::vector<int> array(arraySize);
+
+    fillArray(array, 1, 100);
+
+    double timeAtomic = reductionAtomic(array);
+    double timeCritical = reductionCritical(array);
+    double timeLock = reductionLock(array);
+    double timeOpenMP = reductionOpenMP(array);
+
+    std::cout << "\nExecution times:\n";
+    std::cout << "Atomic: " << timeAtomic << " seconds\n";
+    std::cout << "Critical: " << timeCritical << " seconds\n";
+    std::cout << "Lock: " << timeLock << " seconds\n";
+    std::cout << "OpenMP reduction: " << timeOpenMP << " seconds\n";
+
+    return 0;
+}
 
