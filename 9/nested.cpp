@@ -12,6 +12,26 @@ void generateMatrix(std::vector<std::vector<int>>& matrix, int minValue, int max
     }
 }
 
+// Поиск максимума среди минимумов (без вложенного параллелизма)
+int findMaxOfMinsNoNested(const std::vector<std::vector<int>>& matrix) {
+    int maxOfMins = INT_MIN;
+
+#pragma omp parallel for reduction(max:maxOfMins)
+    for (size_t i = 0; i < matrix.size(); ++i) {
+        int rowMin = INT_MAX;
+        for (size_t j = 0; j < matrix[i].size(); ++j) {
+            if (matrix[i][j] < rowMin) {
+                rowMin = matrix[i][j];
+            }
+        }
+        if (rowMin > maxOfMins) {
+            maxOfMins = rowMin;
+        }
+    }
+
+    return maxOfMins;
+}
+
 // Поиск максимума среди минимумов (с вложенным параллелизмом)
 int findMaxOfMinsNested(const std::vector<std::vector<int>>& matrix) {
     int maxOfMins = INT_MIN;
@@ -45,7 +65,11 @@ int main() {
 
     omp_set_nested(1);
 
-
+    // Поиск максимума среди минимумов без вложенного параллелизма
+    double startTime = omp_get_wtime();
+    int maxNoNested = findMaxOfMinsNoNested(matrix);
+    double endTime = omp_get_wtime();
+    std::cout << "Max (no nested): " << maxNoNested << " in " << (endTime - startTime) << " seconds.\n";
 
     // Поиск максимума среди минимумов с вложенным параллелизмом
     startTime = omp_get_wtime();
