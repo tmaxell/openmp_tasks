@@ -33,18 +33,40 @@ double measureExecutionTime(const std::vector<std::vector<int>>& matrix, int rul
 
     double startTime = omp_get_wtime();
 
-    // Один блок с ветвлением внутри
-#pragma omp parallel for schedule(static) if (rule == 1) \
-                                 schedule(dynamic, 10) if (rule == 2) \
-                                 schedule(guided) if (rule == 3)
-    for (int i = 0; i < size; ++i) {
-        int minVal = matrix[i][0];
-        for (int j = 1; j < size; ++j) {
-            if (matrix[i][j] != 0 && matrix[i][j] < minVal) {
-                minVal = matrix[i][j];
+    // Ветвление для выбора типа планирования итераций
+    if (rule == 1) {
+#pragma omp parallel for schedule(static)
+        for (int i = 0; i < size; ++i) {
+            int minVal = matrix[i][0];
+            for (int j = 1; j < size; ++j) {
+                if (matrix[i][j] != 0 && matrix[i][j] < minVal) {
+                    minVal = matrix[i][j];
+                }
             }
+            minValues[i] = minVal;
         }
-        minValues[i] = minVal;
+    } else if (rule == 2) {
+#pragma omp parallel for schedule(dynamic, 10)
+        for (int i = 0; i < size; ++i) {
+            int minVal = matrix[i][0];
+            for (int j = 1; j < size; ++j) {
+                if (matrix[i][j] != 0 && matrix[i][j] < minVal) {
+                    minVal = matrix[i][j];
+                }
+            }
+            minValues[i] = minVal;
+        }
+    } else if (rule == 3) {
+#pragma omp parallel for schedule(guided)
+        for (int i = 0; i < size; ++i) {
+            int minVal = matrix[i][0];
+            for (int j = 1; j < size; ++j) {
+                if (matrix[i][j] != 0 && matrix[i][j] < minVal) {
+                    minVal = matrix[i][j];
+                }
+            }
+            minValues[i] = minVal;
+        }
     }
 
     int maxOfMins = minValues[0];
@@ -58,7 +80,6 @@ double measureExecutionTime(const std::vector<std::vector<int>>& matrix, int rul
     double endTime = omp_get_wtime();
     return endTime - startTime;
 }
-
 
 int main() {
     // Инициализация генератора случайных чисел
