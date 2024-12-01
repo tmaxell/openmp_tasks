@@ -41,7 +41,7 @@ int computeDotProduct(const std::vector<int>& vec1, const std::vector<int>& vec2
 }
 
 int main() {
-    std::string filename = "vectors.txt"; 
+    std::string filename = "vectors.txt";
     std::vector<int> vec1, vec2;
     int dotProductResult = 0;
 
@@ -58,9 +58,16 @@ int main() {
 
 #pragma omp section
             {
-                std::cout << "Waiting for vectors to calculate dot product...\n";
-#pragma omp barrier
-                if (!vec1.empty() && !vec2.empty()) {
+                std::cout << "Preparing for dot product calculation...\n";
+            }
+        }
+
+        // Выполняем вычисление скалярного произведения после загрузки векторов
+        if (!vec1.empty() && !vec2.empty()) {
+#pragma omp parallel
+            {
+#pragma omp single
+                {
                     dotProductResult = computeDotProduct(vec1, vec2);
                 }
             }
