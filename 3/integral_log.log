@@ -1,0 +1,5 @@
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 1000000
+Integral value: 2
+Execution time: 0.00408697 seconds
+------------------------------------------
