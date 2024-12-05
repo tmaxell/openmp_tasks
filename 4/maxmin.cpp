@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 // Функция для генерации случайной матрицы
 std::vector<std::vector<int>> generateMatrix(int rows, int cols, int minValue, int maxValue) {
@@ -26,7 +27,6 @@ void printMatrix(const std::vector<std::vector<int>>& matrix) {
 }
 
 int main() {
-    // Инициализация генератора случайных чисел
     std::srand(static_cast<unsigned int>(std::time(0)));
 
     // Размеры матрицы
@@ -43,7 +43,34 @@ int main() {
     // Вектор минимальных значений строк
     std::vector<int> minValues(rows);
 
-    // Поиск минимальных значений в каждой строке с использованием OpenMP
+    std::ofstream logFile("matrix_log.log", std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Cannot open log file.\n";
+        return 1;
+    }
+
+    // Последовательный поиск минимальных значений строк
+    double start_time_seq = omp_get_wtime();
+    for (int i = 0; i < rows; ++i) {
+        int minVal = matrix[i][0];
+        for (int j = 1; j < cols; ++j) {
+            if (matrix[i][j] < minVal) {
+                minVal = matrix[i][j];
+            }
+        }
+        minValues[i] = minVal;
+    }
+    int maxOfMins_seq = minValues[0];
+    for (int i = 1; i < rows; ++i) {
+        if (minValues[i] > maxOfMins_seq) {
+            maxOfMins_seq = minValues[i];
+        }
+    }
+    double end_time_seq = omp_get_wtime();
+    double execution_time_seq = end_time_seq - start_time_seq;
+
+    // Поиск минимальных значений строк с использованием OpenMP
+    double start_time_parallel = omp_get_wtime();
 #pragma omp parallel for
     for (int i = 0; i < rows; ++i) {
         int minVal = matrix[i][0];
@@ -55,17 +82,34 @@ int main() {
         minValues[i] = minVal;
     }
 
-    // Поиск максимального значения среди минимальных
-    int maxOfMins = minValues[0];
-#pragma omp parallel for reduction(max:maxOfMins)
+    // Поиск максимального значения среди минимальных с использованием OpenMP
+    int maxOfMins_parallel = minValues[0];
+#pragma omp parallel for reduction(max:maxOfMins_parallel)
     for (int i = 1; i < rows; ++i) {
-        if (minValues[i] > maxOfMins) {
-            maxOfMins = minValues[i];
+        if (minValues[i] > maxOfMins_parallel) {
+            maxOfMins_parallel = minValues[i];
         }
     }
+    double end_time_parallel = omp_get_wtime();
+    double execution_time_parallel = end_time_parallel - start_time_parallel;
 
-    // Вывод результата
-    std::cout << "Maximum value among the minimums of each row: " << maxOfMins << "\n";
+    std::cout << "Sequential Maximum value among the minimums of each row: " << maxOfMins_seq << "\n";
+    std::cout << "Parallel Maximum value among the minimums of each row: " << maxOfMins_parallel << "\n";
+    std::cout << "Sequential Execution time: " << execution_time_seq << " seconds\n";
+    std::cout << "Parallel Execution time: " << execution_time_parallel << " seconds\n";
+
+    double speedup = execution_time_seq / execution_time_parallel;
+    std::cout << "Speedup (sequential / parallel): " << speedup << "\n";
+
+    logFile << "Matrix size: " << rows << "x" << cols << "\n";
+    logFile << "Sequential Maximum value: " << maxOfMins_seq << "\n";
+    logFile << "Parallel Maximum value: " << maxOfMins_parallel << "\n";
+    logFile << "Sequential Execution time: " << execution_time_seq << " seconds\n";
+    logFile << "Parallel Execution time: " << execution_time_parallel << " seconds\n";
+    logFile << "Speedup (sequential / parallel): " << speedup << "\n";
+    logFile << "------------------------------------------\n";
+
+    logFile.close();
 
     return 0;
 }
