@@ -1,0 +1,4 @@
+Vector size: 9
+Time with reduction: 0.000797987 seconds
+Time without reduction: 0.000307083 seconds
+---------------------------------------
