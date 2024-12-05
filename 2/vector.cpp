@@ -2,16 +2,14 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 #include <omp.h>
 
 int main() {
-    // Инициализация генератора случайных чисел
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    // Размер векторов
-    int n = 10; // Вы можете изменить размер на любое значение
+    int n = 10; // Размер векторов
 
-    // Генерация случайных векторов A и B
     std::vector<int> A(n);
     std::vector<int> B(n);
 
@@ -29,18 +27,32 @@ int main() {
     for (int val : B) std::cout << val << " ";
     std::cout << "\n";
 
+    // Лог-файл
+    std::ofstream logFile("results.log", std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Cannot open log file.\n";
+        return 1;
+    }
+
     // Скалярное произведение с использованием редукции
     int dot_product_reduction = 0;
+    double start_time_reduction = omp_get_wtime();
 
 #pragma omp parallel for reduction(+:dot_product_reduction)
     for (int i = 0; i < n; ++i) {
         dot_product_reduction += A[i] * B[i];
     }
 
+    double end_time_reduction = omp_get_wtime();
+    double time_reduction = end_time_reduction - start_time_reduction;
+
     std::cout << "Dot product using reduction: " << dot_product_reduction << "\n";
+    logFile << "Using reduction: Dot product = " << dot_product_reduction
+            << ", Time = " << time_reduction << " seconds\n";
 
     // Скалярное произведение без использования редукции
     int dot_product_no_reduction = 0;
+    double start_time_no_reduction = omp_get_wtime();
 
 #pragma omp parallel
     {
@@ -57,7 +69,13 @@ int main() {
         }
     }
 
-    std::cout << "Dot product without reduction: " << dot_product_no_reduction << "\n";
+    double end_time_no_reduction = omp_get_wtime();
+    double time_no_reduction = end_time_no_reduction - start_time_no_reduction;
 
+    std::cout << "Dot product without reduction: " << dot_product_no_reduction << "\n";
+    logFile << "Without reduction: Dot product = " << dot_product_no_reduction
+            << ", Time = " << time_no_reduction << " seconds\n";
+
+    logFile.close();
     return 0;
 }

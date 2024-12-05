@@ -1,0 +1,2 @@
+Using reduction: Dot product = 26052, Time = 0.000308037 seconds
+Without reduction: Dot product = 26052, Time = 0.000108957 seconds
