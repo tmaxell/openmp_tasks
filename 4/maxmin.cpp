@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <iomanip>
 
 // Функция для генерации случайной матрицы
 std::vector<std::vector<int>> generateMatrix(int rows, int cols, int minValue, int maxValue) {
@@ -16,41 +17,12 @@ std::vector<std::vector<int>> generateMatrix(int rows, int cols, int minValue, i
     return matrix;
 }
 
-// Функция для вывода матрицы
-void printMatrix(const std::vector<std::vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int val : row) {
-            std::cout << val << " ";
-        }
-        std::cout << "\n";
-    }
-}
-
-int main() {
-    std::srand(static_cast<unsigned int>(std::time(0)));
-
-    // Размеры матрицы
-    int rows = 5; // Количество строк
-    int cols = 6; // Количество столбцов
-
-    // Генерация случайной матрицы
-    auto matrix = generateMatrix(rows, cols, 1, 100);
-
-    // Вывод матрицы
-    std::cout << "Generated Matrix:\n";
-    printMatrix(matrix);
-
-    // Вектор минимальных значений строк
+// Функция для последовательного поиска минимальных значений в строках
+int sequentialMaxOfMins(const std::vector<std::vector<int>>& matrix) {
+    int rows = matrix.size();
+    int cols = matrix[0].size();
     std::vector<int> minValues(rows);
 
-    std::ofstream logFile("matrix_log.log", std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "Error: Cannot open log file.\n";
-        return 1;
-    }
-
-    // Последовательный поиск минимальных значений строк
-    double start_time_seq = omp_get_wtime();
     for (int i = 0; i < rows; ++i) {
         int minVal = matrix[i][0];
         for (int j = 1; j < cols; ++j) {
@@ -60,17 +32,23 @@ int main() {
         }
         minValues[i] = minVal;
     }
-    int maxOfMins_seq = minValues[0];
+
+    int maxOfMins = minValues[0];
     for (int i = 1; i < rows; ++i) {
-        if (minValues[i] > maxOfMins_seq) {
-            maxOfMins_seq = minValues[i];
+        if (minValues[i] > maxOfMins) {
+            maxOfMins = minValues[i];
         }
     }
-    double end_time_seq = omp_get_wtime();
-    double execution_time_seq = end_time_seq - start_time_seq;
 
-    // Поиск минимальных значений строк с использованием OpenMP
-    double start_time_parallel = omp_get_wtime();
+    return maxOfMins;
+}
+
+// Функция для параллельного поиска минимальных значений в строках
+int parallelMaxOfMins(const std::vector<std::vector<int>>& matrix) {
+    int rows = matrix.size();
+    int cols = matrix[0].size();
+    std::vector<int> minValues(rows);
+
 #pragma omp parallel for
     for (int i = 0; i < rows; ++i) {
         int minVal = matrix[i][0];
@@ -82,19 +60,53 @@ int main() {
         minValues[i] = minVal;
     }
 
-    // Поиск максимального значения среди минимальных с использованием OpenMP
-    int maxOfMins_parallel = minValues[0];
-#pragma omp parallel for reduction(max:maxOfMins_parallel)
+    int maxOfMins = minValues[0];
+#pragma omp parallel for reduction(max:maxOfMins)
     for (int i = 1; i < rows; ++i) {
-        if (minValues[i] > maxOfMins_parallel) {
-            maxOfMins_parallel = minValues[i];
+        if (minValues[i] > maxOfMins) {
+            maxOfMins = minValues[i];
         }
     }
+
+    return maxOfMins;
+}
+
+int main() {
+    std::srand(static_cast<unsigned int>(std::time(0)));
+
+    // Размеры матрицы
+    int rows = 1000;
+    int cols = 1000;
+
+    auto matrix = generateMatrix(rows, cols, 1, 100);
+
+    std::ofstream logFile("matrix_log.log", std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Cannot open log file.\n";
+        return 1;
+    }
+
+    // Последовательное выполнение
+    double start_time_seq = omp_get_wtime();
+    int seqResult = sequentialMaxOfMins(matrix);
+    double end_time_seq = omp_get_wtime();
+    double execution_time_seq = end_time_seq - start_time_seq;
+
+    // Параллельное выполнение
+    double start_time_parallel = omp_get_wtime();
+    int parallelResult = parallelMaxOfMins(matrix);
     double end_time_parallel = omp_get_wtime();
     double execution_time_parallel = end_time_parallel - start_time_parallel;
 
-    std::cout << "Sequential Maximum value among the minimums of each row: " << maxOfMins_seq << "\n";
-    std::cout << "Parallel Maximum value among the minimums of each row: " << maxOfMins_parallel << "\n";
+    if (seqResult != parallelResult) {
+        std::cerr << "Error: Results do not match! Sequential: " << seqResult
+                  << ", Parallel: " << parallelResult << "\n";
+        return 1;
+    }
+
+    std::cout << std::fixed << std::setprecision(6);
+    std::cout << "Sequential Maximum value among the minimums of each row: " << seqResult << "\n";
+    std::cout << "Parallel Maximum value among the minimums of each row: " << parallelResult << "\n";
     std::cout << "Sequential Execution time: " << execution_time_seq << " seconds\n";
     std::cout << "Parallel Execution time: " << execution_time_parallel << " seconds\n";
 
@@ -102,8 +114,8 @@ int main() {
     std::cout << "Speedup (sequential / parallel): " << speedup << "\n";
 
     logFile << "Matrix size: " << rows << "x" << cols << "\n";
-    logFile << "Sequential Maximum value: " << maxOfMins_seq << "\n";
-    logFile << "Parallel Maximum value: " << maxOfMins_parallel << "\n";
+    logFile << "Sequential Maximum value: " << seqResult << "\n";
+    logFile << "Parallel Maximum value: " << parallelResult << "\n";
     logFile << "Sequential Execution time: " << execution_time_seq << " seconds\n";
     logFile << "Parallel Execution time: " << execution_time_parallel << " seconds\n";
     logFile << "Speedup (sequential / parallel): " << speedup << "\n";

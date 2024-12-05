@@ -1,0 +1,21 @@
+Matrix size: 5x6
+Sequential Maximum value: 21
+Parallel Maximum value: 21
+Sequential Execution time: 1.90735e-06 seconds
+Parallel Execution time: 0.000643015 seconds
+Speedup (sequential / parallel): 0.00296626
+------------------------------------------
+Matrix size: 5x6
+Sequential Maximum value: 51
+Parallel Maximum value: 51
+Sequential Execution time: 0 seconds
+Parallel Execution time: 0.00028801 seconds
+Speedup (sequential / parallel): 0
+------------------------------------------
+Matrix size: 1000x1000
+Sequential Maximum value: 1
+Parallel Maximum value: 1
+Sequential Execution time: 0.00597692 seconds
+Parallel Execution time: 0.00125694 seconds
+Speedup (sequential / parallel): 4.75512
+------------------------------------------
