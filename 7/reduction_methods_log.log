@@ -1,0 +1,7 @@
+Array size: 1000
+Execution times:
+Atomic: 0.000539064 seconds
+Critical: 0.000195026 seconds
+Lock: 0.000205994 seconds
+OpenMP reduction: 0.000126123 seconds
+------------------------------------------
