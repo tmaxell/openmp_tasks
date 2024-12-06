@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <fstream>
+#include <iomanip>
 
 // Функция для генерации ленточной матрицы
 std::vector<std::vector<int>> generateBandMatrix(int size, int bandwidth, int minValue, int maxValue) {
@@ -100,15 +102,32 @@ int main() {
         printMatrix(matrix);
     }
 
+    // Открытие лог-файла
+    std::ofstream logFile("band_matrix_log.log", std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Error: Cannot open log file.\n";
+        return 1;
+    }
+
     // Измерение времени выполнения для разных правил распределения
     double timeStatic = measureExecutionTime(matrix, 1);
     double timeDynamic = measureExecutionTime(matrix, 2);
     double timeGuided = measureExecutionTime(matrix, 3);
 
     // Вывод времени выполнения
+    std::cout << std::fixed << std::setprecision(6);
     std::cout << "Execution time with static scheduling: " << timeStatic << " seconds\n";
     std::cout << "Execution time with dynamic scheduling: " << timeDynamic << " seconds\n";
     std::cout << "Execution time with guided scheduling: " << timeGuided << " seconds\n";
+
+    logFile << "Matrix size: " << size << "x" << size << "\n";
+    logFile << "Bandwidth: " << bandwidth << "\n";
+    logFile << "Execution time with static scheduling: " << timeStatic << " seconds\n";
+    logFile << "Execution time with dynamic scheduling: " << timeDynamic << " seconds\n";
+    logFile << "Execution time with guided scheduling: " << timeGuided << " seconds\n";
+    logFile << "------------------------------------------\n";
+
+    logFile.close();
 
     return 0;
 }
