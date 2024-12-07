@@ -74,9 +74,12 @@ int parallelMaxOfMins(const std::vector<std::vector<int>>& matrix) {
 int main() {
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    // Размеры матрицы
-    int rows = 1000;
-    int cols = 1000;
+    // Ввод размеров матрицы
+    int rows, cols;
+    std::cout << "Enter the number of rows: ";
+    std::cin >> rows;
+    std::cout << "Enter the number of columns: ";
+    std::cin >> cols;
 
     auto matrix = generateMatrix(rows, cols, 1, 100);
 
