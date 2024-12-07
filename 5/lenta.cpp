@@ -87,11 +87,16 @@ int main() {
     // Инициализация генератора случайных чисел
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    // Параметры матрицы
-    int size = 1000;       // Размер матрицы
-    int bandwidth = 10;    // Ширина ленты
-    int minValue = 1;      // Минимальное значение элементов
-    int maxValue = 100;    // Максимальное значение элементов
+    // Ввод параметров
+    int size, bandwidth, minValue, maxValue;
+    std::cout << "Enter the size of the matrix: ";
+    std::cin >> size;
+    std::cout << "Enter the bandwidth of the matrix: ";
+    std::cin >> bandwidth;
+    std::cout << "Enter the minimum value for matrix elements: ";
+    std::cin >> minValue;
+    std::cout << "Enter the maximum value for matrix elements: ";
+    std::cin >> maxValue;
 
     // Генерация ленточной матрицы
     auto matrix = generateBandMatrix(size, bandwidth, minValue, maxValue);
