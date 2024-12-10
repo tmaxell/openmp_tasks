@@ -8,24 +8,17 @@
 int main() {
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    int n = 10; // Размер векторов
+    int n;
+    std::cout << "Enter the size of the vectors: ";
+    std::cin >> n;
 
     std::vector<int> A(n);
     std::vector<int> B(n);
 
     for (int i = 0; i < n; ++i) {
-        A[i] = std::rand() % 100; // Значения от 0 до 99
-        B[i] = std::rand() % 100; // Значения от 0 до 99
+        A[i] = std::rand() % 100;
+        B[i] = std::rand() % 100;
     }
-
-    // Вывод сгенерированных векторов
-    std::cout << "Vector A: ";
-    for (int val : A) std::cout << val << " ";
-    std::cout << "\n";
-
-    std::cout << "Vector B: ";
-    for (int val : B) std::cout << val << " ";
-    std::cout << "\n";
 
     // Лог-файл
     std::ofstream logFile("results.log", std::ios::app);
@@ -38,7 +31,7 @@ int main() {
     int dot_product_reduction = 0;
     double start_time_reduction = omp_get_wtime();
 
-#pragma omp parallel for reduction(+:dot_product_reduction)
+    #pragma omp parallel for reduction(+:dot_product_reduction) schedule(static)
     for (int i = 0; i < n; ++i) {
         dot_product_reduction += A[i] * B[i];
     }
@@ -54,16 +47,16 @@ int main() {
     int dot_product_no_reduction = 0;
     double start_time_no_reduction = omp_get_wtime();
 
-#pragma omp parallel
+    #pragma omp parallel
     {
         int local_sum = 0;
 
-#pragma omp for
+        #pragma omp for schedule(static)
         for (int i = 0; i < n; ++i) {
             local_sum += A[i] * B[i];
         }
 
-#pragma omp critical
+        #pragma omp critical
         {
             dot_product_no_reduction += local_sum;
         }
@@ -77,5 +70,10 @@ int main() {
             << ", Time = " << time_no_reduction << " seconds\n";
 
     logFile.close();
+
+    std::cout << "\nPerformance Comparison:\n";
+    std::cout << "Reduction time: " << time_reduction << " seconds\n";
+    std::cout << "No reduction time: " << time_no_reduction << " seconds\n";
+
     return 0;
 }

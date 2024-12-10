@@ -1,2 +1,12 @@
 Using reduction: Dot product = 26052, Time = 0.000308037 seconds
 Without reduction: Dot product = 26052, Time = 0.000108957 seconds
+Using reduction: Dot product = 24701657, Time = 0.00029707 seconds
+Without reduction: Dot product = 24701657, Time = 0.000188112 seconds
+Using reduction: Dot product = 24579035, Time = 0.000343084 seconds
+Without reduction: Dot product = 24579035, Time = 0.000192165 seconds
+Using reduction: Dot product = -1843390497, Time = 0.00136495 seconds
+Without reduction: Dot product = -1843390497, Time = 0.00119114 seconds
+Using reduction: Dot product = 210513308, Time = 0.0705659 seconds
+Without reduction: Dot product = 210513308, Time = 0.072463 seconds
+Using reduction: Dot product = 214606193, Time = 0.068572 seconds
+Without reduction: Dot product = 214606193, Time = 0.0687029 seconds
