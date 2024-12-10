@@ -2,3 +2,19 @@ Vector size: 9
 Time with reduction: 0.000797987 seconds
 Time without reduction: 0.000307083 seconds
 ---------------------------------------
+Vector size: 10
+Time with reduction: 0.000518084 seconds
+Time without reduction: 9.67979e-05 seconds
+---------------------------------------
+Vector size: 10000
+Time with reduction: 0.000396967 seconds
+Time without reduction: 0.000391006 seconds
+---------------------------------------
+Vector size: 10000000
+Time with reduction: 0.00781488 seconds
+Time without reduction: 0.00701189 seconds
+---------------------------------------
+Vector size: 1000000000
+Time with reduction: 0.649219 seconds
+Time without reduction: 0.634357 seconds
+---------------------------------------

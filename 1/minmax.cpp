@@ -3,11 +3,21 @@
 #include <limits>
 #include <omp.h>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 
 int main() {
-    // Инициализация вектора с произвольными значениями
-    std::vector<int> vec = {45, 22, 78, 11, 90, 3, 67, 50, 19};
-    int n = vec.size();
+    std::srand(static_cast<unsigned int>(std::time(0)));
+
+    int n;
+    std::cout << "Enter the size of the vector: ";
+    std::cin >> n;
+
+    std::vector<int> vec(n);
+    for (int i = 0; i < n; ++i) {
+        vec[i] = std::rand() % 1000; // Случайные числа от 0 до 999
+    }
+
     double start_time, end_time;
 
     std::ofstream log_file("performance_log.txt", std::ios::app);
@@ -34,17 +44,18 @@ int main() {
     std::cout << "Maximum value: " << max_val << "\n";
     std::cout << "Execution time with reduction: " << time_with_reduction << " seconds\n";
 
-    // Подход без использования редукции
     min_val = std::numeric_limits<int>::max();
     max_val = std::numeric_limits<int>::min();
 
     start_time = omp_get_wtime();
+    int num_threads;
 #pragma omp parallel
     {
+        // Локальные минимумы и максимумы для каждого потока
         int local_min = std::numeric_limits<int>::max();
         int local_max = std::numeric_limits<int>::min();
 
-#pragma omp for
+#pragma omp for nowait
         for (int i = 0; i < n; ++i) {
             if (vec[i] < local_min) local_min = vec[i];
             if (vec[i] > local_max) local_max = vec[i];
@@ -55,16 +66,20 @@ int main() {
             if (local_min < min_val) min_val = local_min;
             if (local_max > max_val) max_val = local_max;
         }
+
+#pragma omp single
+        num_threads = omp_get_num_threads();
     }
     end_time = omp_get_wtime();
     double time_without_reduction = end_time - start_time;
 
-    std::cout << "Without reduction:\n";
+    std::cout << "Without reduction (optimized):\n";
     std::cout << "Minimum value: " << min_val << "\n";
     std::cout << "Maximum value: " << max_val << "\n";
     std::cout << "Execution time without reduction: " << time_without_reduction << " seconds\n";
 
     log_file << "Vector size: " << n << "\n";
+    log_file << "Threads used: " << num_threads << "\n";
     log_file << "Time with reduction: " << time_with_reduction << " seconds\n";
     log_file << "Time without reduction: " << time_without_reduction << " seconds\n";
     log_file << "---------------------------------------\n";
