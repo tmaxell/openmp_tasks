@@ -3,3 +3,19 @@ Number of subdivisions (N): 1000000
 Integral value: 2
 Execution time: 0.00408697 seconds
 ------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 1000000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.014626 seconds
+Parallel Execution time: 0.003407 seconds
+Speedup (sequential / parallel): 4.29293
+------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 100000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.00201607 seconds
+Parallel Execution time: 0.000665903 seconds
+Speedup (sequential / parallel): 3.02757
+------------------------------------------

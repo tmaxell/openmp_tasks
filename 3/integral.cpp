@@ -12,8 +12,16 @@ int main() {
     double a = 0.0;
     double b = M_PI;
 
-    // Количество разбиений
-    int N = 1000000;
+    // Ввод количества разбиений
+    int N;
+    std::cout << "Enter the number of subdivisions (N): ";
+    std::cin >> N;
+
+    if (N <= 0) {
+        std::cerr << "Error: Number of subdivisions must be positive.\n";
+        return 1;
+    }
+
     double h = (b - a) / N;
     double integral_parallel = 0.0;
     double integral_sequential = 0.0;
@@ -24,6 +32,7 @@ int main() {
         return 1;
     }
 
+    // Последовательное вычисление интеграла
     double start_time_sequential = omp_get_wtime();
     for (int i = 0; i < N; ++i) {
         double x_i = a + i * h; 
@@ -33,6 +42,7 @@ int main() {
     double end_time_sequential = omp_get_wtime();
     double execution_time_sequential = end_time_sequential - start_time_sequential;
 
+    // Параллельное вычисление интеграла
     double start_time_parallel = omp_get_wtime();
 #pragma omp parallel for reduction(+:integral_parallel)
     for (int i = 0; i < N; ++i) {
