@@ -28,3 +28,8 @@ Threads used: 8
 Time with reduction: 0.00123787 seconds
 Time without reduction: 0.00118303 seconds
 ---------------------------------------
+Vector size: 100000
+Threads used: 8
+Time with reduction: 0.000917912 seconds
+Time without reduction: 0.000402927 seconds
+---------------------------------------

@@ -12,9 +12,22 @@ int main() {
     std::cout << "Enter the size of the vector: ";
     std::cin >> n;
 
+    // Диапазон случайных чисел
+    int min_range, max_range;
+    std::cout << "Enter the minimum range value: ";
+    std::cin >> min_range;
+    std::cout << "Enter the maximum range value: ";
+    std::cin >> max_range;
+
+    // Проверка корректности диапазона
+    if (min_range > max_range) {
+        std::cerr << "Error: Minimum range value cannot be greater than maximum range value.\n";
+        return 1;
+    }
+
     std::vector<int> vec(n);
     for (int i = 0; i < n; ++i) {
-        vec[i] = std::rand() % 1000; // Случайные числа от 0 до 999
+        vec[i] = min_range + std::rand() % (max_range - min_range + 1); // Генерация в указанном диапазоне
     }
 
     double start_time, end_time;
@@ -81,6 +94,7 @@ int main() {
     std::cout << "Execution time without reduction: " << time_without_reduction << " seconds\n";
 
     log_file << "Vector size: " << n << "\n";
+    log_file << "Range: [" << min_range << ", " << max_range << "]\n";
     log_file << "Threads used: " << num_threads << "\n";
     log_file << "Time with reduction: " << time_with_reduction << " seconds\n";
     log_file << "Time without reduction: " << time_without_reduction << " seconds\n";
