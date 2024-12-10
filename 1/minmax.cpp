@@ -25,9 +25,10 @@ int main() {
         return 1;
     }
 
+    // Генерация случайного вектора
     std::vector<int> vec(n);
     for (int i = 0; i < n; ++i) {
-        vec[i] = min_range + std::rand() % (max_range - min_range + 1); // Генерация в указанном диапазоне
+        vec[i] = min_range + std::rand() % (max_range - min_range + 1);
     }
 
     double start_time, end_time;
@@ -56,46 +57,33 @@ int main() {
     std::cout << "Maximum value: " << max_val << "\n";
     std::cout << "Execution time with reduction: " << time_with_reduction << " seconds\n";
 
-    // Подход без использования редукции (с минимизацией синхронизации)
+    // Подход без использования редукции
     min_val = std::numeric_limits<int>::max();
     max_val = std::numeric_limits<int>::min();
 
     start_time = omp_get_wtime();
-    int num_threads;
-    std::vector<int> local_min, local_max;
-
 #pragma omp parallel
     {
-        int thread_id = omp_get_thread_num();
-        int local_min_val = std::numeric_limits<int>::max();
-        int local_max_val = std::numeric_limits<int>::min();
-
-#pragma omp for nowait
+        // Общие переменные обновляются в критических секциях
+#pragma omp for
         for (int i = 0; i < n; ++i) {
-            if (vec[i] < local_min_val) local_min_val = vec[i];
-            if (vec[i] > local_max_val) local_max_val = vec[i];
-        }
-
 #pragma omp critical
-        {
-            if (local_min_val < min_val) min_val = local_min_val;
-            if (local_max_val > max_val) max_val = local_max_val;
+            {
+                if (vec[i] < min_val) min_val = vec[i];
+                if (vec[i] > max_val) max_val = vec[i];
+            }
         }
-
-#pragma omp single
-        num_threads = omp_get_num_threads();
     }
     end_time = omp_get_wtime();
     double time_without_reduction = end_time - start_time;
 
-    std::cout << "Without reduction (optimized):\n";
+    std::cout << "Without reduction:\n";
     std::cout << "Minimum value: " << min_val << "\n";
     std::cout << "Maximum value: " << max_val << "\n";
     std::cout << "Execution time without reduction: " << time_without_reduction << " seconds\n";
 
     log_file << "Vector size: " << n << "\n";
     log_file << "Range: [" << min_range << ", " << max_range << "]\n";
-    log_file << "Threads used: " << num_threads << "\n";
     log_file << "Time with reduction: " << time_with_reduction << " seconds\n";
     log_file << "Time without reduction: " << time_without_reduction << " seconds\n";
     log_file << "---------------------------------------\n";
