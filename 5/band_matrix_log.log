@@ -4,3 +4,9 @@ Execution time with static scheduling: 0.00148106 seconds
 Execution time with dynamic scheduling: 0.00102496 seconds
 Execution time with guided scheduling: 0.000927925 seconds
 ------------------------------------------
+Matrix size: 1000x1000
+Bandwidth: 100
+Execution time with static scheduling: 0.00342178 seconds
+Execution time with dynamic scheduling: 0.00140691 seconds
+Execution time with guided scheduling: 0.00114703 seconds
+------------------------------------------

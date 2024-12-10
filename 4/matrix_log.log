@@ -19,3 +19,31 @@ Sequential Execution time: 0.00597692 seconds
 Parallel Execution time: 0.00125694 seconds
 Speedup (sequential / parallel): 4.75512
 ------------------------------------------
+Matrix size: 10000x10000
+Sequential Maximum value: 1
+Parallel Maximum value: 1
+Sequential Execution time: 0.253421 seconds
+Parallel Execution time: 0.0575929 seconds
+Speedup (sequential / parallel): 4.40022
+------------------------------------------
+Matrix size: 1000x1000
+Sequential Maximum value: 1
+Parallel Maximum value: 1
+Sequential Execution time: 0.00606894 seconds
+Parallel Execution time: 0.00155687 seconds
+Speedup (sequential / parallel): 3.89816
+------------------------------------------
+Matrix size: 10000x10000
+Sequential Maximum value: 1
+Parallel Maximum value: 1
+Sequential Execution time: 0.413307 seconds
+Parallel Execution time: 0.075141 seconds
+Speedup (sequential / parallel): 5.50042
+------------------------------------------
+Matrix size: 100x100
+Sequential Maximum value: 6
+Parallel Maximum value: 6
+Sequential Execution time: 8.70228e-05 seconds
+Parallel Execution time: 0.00161386 seconds
+Speedup (sequential / parallel): 0.0539223
+------------------------------------------

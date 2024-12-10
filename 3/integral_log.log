@@ -19,3 +19,43 @@ Sequential Execution time: 0.00201607 seconds
 Parallel Execution time: 0.000665903 seconds
 Speedup (sequential / parallel): 3.02757
 ------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 10000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.000140905 seconds
+Parallel Execution time: 0.000625134 seconds
+Speedup (sequential / parallel): 0.2254
+------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 100000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.00272989 seconds
+Parallel Execution time: 0.000916004 seconds
+Speedup (sequential / parallel): 2.98022
+------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 1000000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.0158801 seconds
+Parallel Execution time: 0.00463104 seconds
+Speedup (sequential / parallel): 3.42906
+------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 100000000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 0.789132 seconds
+Parallel Execution time: 0.185301 seconds
+Speedup (sequential / parallel): 4.25865
+------------------------------------------
+Integration bounds: [0, 3.14159]
+Number of subdivisions (N): 1000000000
+Sequential Integral value: 2
+Parallel Integral value: 2
+Sequential Execution time: 7.59109 seconds
+Parallel Execution time: 3.02436 seconds
+Speedup (sequential / parallel): 2.50998
+------------------------------------------
