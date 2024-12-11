@@ -52,8 +52,14 @@ double testScheduling(int numIterations, const std::string& scheduleType, int ch
 int main() {
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    int numIterations = 10000; // Количество итераций
-    int chunkSize = 10;        // Размер чанка для dynamic и guided
+    int numIterations;
+    int chunkSize;
+
+    // Ввод параметров
+    std::cout << "Enter the number of iterations: ";
+    std::cin >> numIterations;
+    std::cout << "Enter the chunk size (for dynamic and guided): ";
+    std::cin >> chunkSize;
 
     std::ofstream logFile("scheduling_log.log", std::ios::app);
     if (!logFile.is_open()) {
