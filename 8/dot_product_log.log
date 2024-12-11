@@ -26,3 +26,25 @@ Parallel result: 1540
 Sequential execution time: 0 seconds
 Parallel execution time: 0.000648022 seconds
 ------------------------------------------
+Dot Product Calculation:
+Vector size: 48
+Sequential result: 0
+Time for reading vectors: 0.000669003 seconds
+Time for calculating dot product: 0.000669003 seconds
+------------------------------------------
+Dot Product Calculation:
+Vector size: 48
+Sequential result: 0
+Parallel result: 0
+Time for reading vectors: 0.000699997 seconds
+Time for calculating dot product (sequential): 0.000699997 seconds
+Time for calculating dot product (parallel): 0.000699997 seconds
+------------------------------------------
+Dot Product Calculation:
+Vector size: 48
+Sequential result: 0
+Parallel result: 0
+Time for reading vectors: 0.000684977 seconds
+Time for calculating dot product (sequential): 0.000684977 seconds
+Time for calculating dot product (parallel): 0.000684977 seconds
+------------------------------------------
