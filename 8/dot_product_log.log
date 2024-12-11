@@ -1,0 +1,28 @@
+Dot Product Calculation:
+Vector size: 7
+Sequential result: 100
+Parallel result: 100
+Sequential execution time: 0 seconds
+Parallel execution time: 0.000797987 seconds
+------------------------------------------
+Dot Product Calculation:
+Vector size: 7
+Sequential result: 100
+Parallel result: 100
+Sequential execution time: 0 seconds
+Parallel execution time: 0.000604868 seconds
+------------------------------------------
+Dot Product Calculation:
+Vector size: 11
+Sequential result: 1540
+Parallel result: 1540
+Sequential execution time: 0 seconds
+Parallel execution time: 0.00043416 seconds
+------------------------------------------
+Dot Product Calculation:
+Vector size: 11
+Sequential result: 1540
+Parallel result: 1540
+Sequential execution time: 0 seconds
+Parallel execution time: 0.000648022 seconds
+------------------------------------------

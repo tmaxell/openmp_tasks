@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <omp.h>
-#include <string>
 #include <stdexcept>
 
 // Функция для чтения векторов из файла
@@ -42,47 +41,44 @@ int computeDotProductSequential(const std::vector<int>& vec1, const std::vector<
     return dotProduct;
 }
 
-// Параллельное вычисление скалярного произведения
-int computeDotProductParallel(const std::vector<int>& vec1, const std::vector<int>& vec2) {
-    if (vec1.size() != vec2.size()) {
-        throw std::invalid_argument("Vectors must have the same size for dot product calculation.");
-    }
-
-    int dotProduct = 0;
-#pragma omp parallel for reduction(+:dotProduct)
-    for (size_t i = 0; i < vec1.size(); ++i) {
-        dotProduct += vec1[i] * vec2[i];
-    }
-
-    return dotProduct;
-}
-
 int main() {
-    std::string filename = "vectors.txt";
+    std::string filename = "vectors.txt";  // Файл с векторами
     std::vector<int> vec1, vec2;
-    int dotProductSequential = 0, dotProductParallel = 0;
+    int dotProductSequential = 0;
 
     try {
-        // Чтение векторов из файла
-        std::cout << "Reading vectors from file...\n";
-        readVectorsFromFile(filename, vec1, vec2);
-        std::cout << "Vectors loaded. Size: " << vec1.size() << "\n";
+        // Использование директивы sections для распараллеливания двух задач
+        double startTimeTotal = omp_get_wtime(); // Время начала всех операций
 
-        // Последовательное вычисление
-        double startTimeSeq = omp_get_wtime();
-        dotProductSequential = computeDotProductSequential(vec1, vec2);
-        double endTimeSeq = omp_get_wtime();
+        #pragma omp parallel sections
+        {
+            // Секция нумеро уно, чтение векторов из файла
+            #pragma omp section
+            {
+                double startTimeRead = omp_get_wtime(); // Время начала чтения
+                std::cout << "Reading vectors from file...\n";
+                readVectorsFromFile(filename, vec1, vec2);
+                double endTimeRead = omp_get_wtime(); // Время окончания чтения
+                std::cout << "Vectors loaded. Size: " << vec1.size() << "\n";
+                std::cout << "Time for reading vectors: " << (endTimeRead - startTimeRead) << " seconds\n";
+            }
 
-        // Параллельное вычисление
-        double startTimePar = omp_get_wtime();
-        dotProductParallel = computeDotProductParallel(vec1, vec2);
-        double endTimePar = omp_get_wtime();
+            // Секция драй, вычисление скалярного произведения
+            #pragma omp section
+            {
+                double startTimeCompute = omp_get_wtime(); // Время начала вычисления
+                std::cout << "Calculating dot product...\n";
+                dotProductSequential = computeDotProductSequential(vec1, vec2);
+                double endTimeCompute = omp_get_wtime(); // Время окончания вычисления
+                std::cout << "Dot product result: " << dotProductSequential << "\n";
+                std::cout << "Time for calculating dot product: " << (endTimeCompute - startTimeCompute) << " seconds\n";
+            }
+        }
 
-        std::cout << "Dot product result (sequential): " << dotProductSequential << "\n";
-        std::cout << "Dot product result (parallel): " << dotProductParallel << "\n";
-        std::cout << "Sequential execution time: " << (endTimeSeq - startTimeSeq) << " seconds\n";
-        std::cout << "Parallel execution time: " << (endTimePar - startTimePar) << " seconds\n";
+        double endTimeTotal = omp_get_wtime(); // Время окончания всех операций
+        std::cout << "Total time for all operations: " << (endTimeTotal - startTimeTotal) << " seconds\n";
 
+        // Запись в лог-файл
         std::ofstream logFile("dot_product_log.log", std::ios::app);
         if (!logFile.is_open()) {
             throw std::runtime_error("Error opening log file.");
@@ -91,9 +87,8 @@ int main() {
         logFile << "Dot Product Calculation:\n";
         logFile << "Vector size: " << vec1.size() << "\n";
         logFile << "Sequential result: " << dotProductSequential << "\n";
-        logFile << "Parallel result: " << dotProductParallel << "\n";
-        logFile << "Sequential execution time: " << (endTimeSeq - startTimeSeq) << " seconds\n";
-        logFile << "Parallel execution time: " << (endTimePar - startTimePar) << " seconds\n";
+        logFile << "Time for reading vectors: " << (endTimeTotal - startTimeTotal) << " seconds\n";
+        logFile << "Time for calculating dot product: " << (endTimeTotal - startTimeTotal) << " seconds\n";
         logFile << "------------------------------------------\n";
 
         logFile.close();
