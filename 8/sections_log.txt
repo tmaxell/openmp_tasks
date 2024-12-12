@@ -1,0 +1,4 @@
+Time for computing scalar product: 0 seconds
+Time for reading data: 0 seconds
+Scalar product of all vectors: 0
+Total program execution time: 0 seconds
